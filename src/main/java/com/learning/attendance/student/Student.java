@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -18,11 +17,12 @@ public class Student {
     UUID group_id;
     String name;
     String email;
-    LocalDate dob;
+    java.sql.Date dob;
     String address;
     String phone_no1;
     String phone_no2;
-    Boolean is_active;
+    @Column(name = "is_active")
+    Boolean isActive;
     Integer slot_count;
     java.sql.Date slot_expiry_date;
     java.sql.Timestamp created_at;
@@ -67,11 +67,11 @@ public class Student {
         this.email = email;
     }
 
-    public LocalDate getDob() {
+    public Date getDob() {
         return dob;
     }
 
-    public void setDob(LocalDate dob) {
+    public void setDob(Date dob) {
         this.dob = dob;
     }
 
@@ -99,12 +99,12 @@ public class Student {
         this.phone_no2 = phone_no2;
     }
 
-    public Boolean getIs_active() {
-        return is_active;
+    public Boolean getActive() {
+        return isActive;
     }
 
-    public void setIs_active(Boolean is_active) {
-        this.is_active = is_active;
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 
     public Integer getSlot_count() {

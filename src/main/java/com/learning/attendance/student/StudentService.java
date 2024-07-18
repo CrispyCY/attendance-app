@@ -22,7 +22,7 @@ public class StudentService {
     }
 
     public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+        return studentRepository.findByIsActiveTrue();
     }
 
     public Optional<Student> getStudentById(UUID id) {
@@ -39,21 +39,27 @@ public class StudentService {
         }
 
         student.setOrganization(authenticatedUser.getOrganization());
+        student.setSlot_count(0);
 
         return studentRepository.save(student);
     }
 
     public Student updateStudent(UUID id, Student studentDetails) {
         Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
-
         student.setName(studentDetails.getName());
+        student.setEmail(studentDetails.getEmail());
+        student.setSlot_count(studentDetails.getSlot_count());
+        student.setAddress(studentDetails.getAddress());
+        student.setDob(studentDetails.getDob());
 
         return studentRepository.save(student);
     }
 
     public void deleteStudent(UUID id) {
         Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
-        studentRepository.delete(student);
+        student.setActive(false);
+        studentRepository.save(student);
+//        studentRepository.delete(student);
     }
 
     public void updateSlotCount(UUID id, Integer newCount) {
