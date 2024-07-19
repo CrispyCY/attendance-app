@@ -9,8 +9,12 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "api/package-transac")
 public class PurchasePackageTransactionController {
+    private final PurchasePackageTransactionService purchasePackageTransactionService;
+
     @Autowired
-    private PurchasePackageTransactionService purchasePackageTransactionService;
+    public PurchasePackageTransactionController(PurchasePackageTransactionService purchasePackageTransactionService) {
+        this.purchasePackageTransactionService = purchasePackageTransactionService;
+    }
 
     @GetMapping
     public List<PurchasePackageTransaction> getAllTransacs() {
@@ -24,9 +28,14 @@ public class PurchasePackageTransactionController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+//    @PostMapping
+//    public PurchasePackageTransaction createTransac(@RequestBody PurchasePackageTransaction aPurchasePackageTransaction) {
+//        return purchasePackageTransactionService.createTransac(aPurchasePackageTransaction);
+//    }
+
     @PostMapping
-    public PurchasePackageTransaction createTransac(@RequestBody PurchasePackageTransaction aPurchasePackageTransaction) {
-        return purchasePackageTransactionService.createTransac(aPurchasePackageTransaction);
+    public List<PurchasePackageTransaction> createTransac(@RequestBody PurchasePackageTransactionRequestDTO dto) {
+        return purchasePackageTransactionService.createTransac(dto);
     }
 
 //    @PutMapping("/{id}")

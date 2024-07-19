@@ -16,7 +16,8 @@ public class Package {
     UUID id;
     String name;
     BigDecimal price;
-    Boolean is_active;
+    @Column(name = "is_active")
+    Boolean isActive;
     Integer slot;
     Integer expiry_days;
     Timestamp created_at;
@@ -57,12 +58,12 @@ public class Package {
         this.price = price;
     }
 
-    public Boolean getIs_active() {
-        return is_active;
+    public Boolean getActive() {
+        return isActive;
     }
 
-    public void setIs_active(Boolean is_active) {
-        this.is_active = is_active;
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 
     public Integer getSlot() {

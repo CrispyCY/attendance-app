@@ -10,8 +10,12 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "api/package")
 public class PackageController {
+    private final PackageService packageService;
+
     @Autowired
-    private PackageService packageService;
+    public PackageController(PackageService packageService) {
+        this.packageService = packageService;
+    }
 
     @GetMapping
     public List<Package> getAllPackages() {

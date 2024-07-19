@@ -2,11 +2,11 @@ package com.learning.attendance.purchase_package_transaction;
 
 import com.learning.attendance.organization.Organization;
 import com.learning.attendance.packages.Package;
+import com.learning.attendance.student.Student;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.UUID;
 
 @Entity
 @Table(name = "purchase_package_transactions")
@@ -14,7 +14,6 @@ public class PurchasePackageTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-    UUID student_id;
     Timestamp created_at;
     Timestamp updated_at;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -23,6 +22,17 @@ public class PurchasePackageTransaction {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "package_id")
     private Package aPackage;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "student_id")
+    private Student student;
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
 
     public Integer getId() {
         return id;
@@ -42,14 +52,6 @@ public class PurchasePackageTransaction {
 
     public void setAPackage(Package aPackage) {
         this.aPackage = aPackage;
-    }
-
-    public UUID getStudent_id() {
-        return student_id;
-    }
-
-    public void setStudent_id(UUID student_id) {
-        this.student_id = student_id;
     }
 
     public Timestamp getCreated_at() {

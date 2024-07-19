@@ -14,11 +14,12 @@ import java.util.UUID;
 @Service
 public class StudentService {
     private final UserRepository userRepository;
-    @Autowired
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
 
-    public StudentService(UserRepository userRepository) {
+    @Autowired
+    public StudentService(UserRepository userRepository, StudentRepository studentRepository) {
         this.userRepository = userRepository;
+        this.studentRepository = studentRepository;
     }
 
     public List<Student> getAllStudents() {
@@ -33,13 +34,14 @@ public class StudentService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        User authenticatedUser = this.userRepository.findByUsername(username);
+        User authenticatedUser = userRepository.findByUsername(username);
         if (authenticatedUser == null) {
             throw new RuntimeException("Authenticated user not found");
         }
 
         student.setOrganization(authenticatedUser.getOrganization());
         student.setSlot_count(0);
+        student.setActive(true);
 
         return studentRepository.save(student);
     }
@@ -58,13 +60,14 @@ public class StudentService {
     public void deleteStudent(UUID id) {
         Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
         student.setActive(false);
+
         studentRepository.save(student);
-//        studentRepository.delete(student);
     }
 
     public void updateSlotCount(UUID id, Integer newCount) {
         Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
-
         student.setSlot_count(newCount);
+
+        studentRepository.save(student);
     }
 }
