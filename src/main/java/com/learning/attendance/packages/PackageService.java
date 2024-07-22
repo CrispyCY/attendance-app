@@ -1,10 +1,8 @@
 package com.learning.attendance.packages;
 
+import com.learning.attendance.auth.AuthUtils;
 import com.learning.attendance.user.User;
-import com.learning.attendance.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,16 +12,20 @@ import java.util.UUID;
 @Service
 public class PackageService {
     private final PackageRepository packageRepository;
-    private final UserRepository userRepository;
+    private final AuthUtils authUtils;
 
     @Autowired
-    public PackageService(UserRepository userRepository, PackageRepository packageRepository) {
-        this.userRepository = userRepository;
+    public PackageService(PackageRepository packageRepository, AuthUtils authUtils) {
         this.packageRepository = packageRepository;
+        this.authUtils = authUtils;
     }
 
     public List<Package> getAllPackages() {
-        return packageRepository.findByIsActiveTrue();
+        User authenticatedUser = authUtils.getAuthenticatedUser();
+        UUID organizationId = authenticatedUser.getOrganization().getId();
+
+
+        return packageRepository.findByOrganizationId(organizationId);
     }
 
     public Optional<Package> getPackageById(UUID id) {
@@ -31,13 +33,7 @@ public class PackageService {
     }
 
     public Package createPackage(Package aPackage) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        User authenticatedUser = this.userRepository.findByUsername(username);
-        if (authenticatedUser == null) {
-            throw new RuntimeException("Authenticated user not found");
-        }
+        User authenticatedUser = authUtils.getAuthenticatedUser();
 
         aPackage.setOrganization(authenticatedUser.getOrganization());
         aPackage.setActive(true);

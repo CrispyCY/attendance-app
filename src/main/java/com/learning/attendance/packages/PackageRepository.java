@@ -8,5 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface PackageRepository extends JpaRepository<Package, UUID> {
-    List<Package> findByIsActiveTrue();
+    List<Package> findByOrganizationId(UUID organizationId);
 }

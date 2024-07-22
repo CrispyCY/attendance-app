@@ -1,7 +1,6 @@
 package com.learning.attendance.user;
 
-import com.learning.attendance.student.Student;
-import com.learning.attendance.student.StudentService;
+import com.learning.attendance.auth.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,20 +10,24 @@ import java.util.UUID;
 
 @Service
 public class UserService {
+    private final UserRepository userRepository;
+    private final AuthUtils authUtils;
+
     @Autowired
-    private UserRepository userRepository;
-    private StudentService studentService;
+    public UserService(UserRepository userRepository, AuthUtils authUtils) {
+        this.userRepository = userRepository;
+        this.authUtils = authUtils;
+    }
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        User authenticatedUser = authUtils.getAuthenticatedUser();
+
+        UUID organizationId = authenticatedUser.getOrganization().getId();
+        return userRepository.findByOrganizationId(organizationId);
     }
 
     public Optional<User> getUserById(UUID id) {
         return userRepository.findById(id);
-    }
-
-    public Optional<Student> getStudentById(UUID id) {
-        return studentService.getStudentById(id);
     }
 
     public User createUser(User user) {

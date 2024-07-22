@@ -1,15 +1,13 @@
 package com.learning.attendance.purchase_package_transaction;
 
+import com.learning.attendance.auth.AuthUtils;
 import com.learning.attendance.packages.Package;
 import com.learning.attendance.packages.PackageRepository;
 import com.learning.attendance.student.Student;
 import com.learning.attendance.student.StudentRepository;
 import com.learning.attendance.student.StudentService;
 import com.learning.attendance.user.User;
-import com.learning.attendance.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,15 +21,15 @@ public class PurchasePackageTransactionService {
     private final StudentService studentService;
     private final PackageRepository packageRepository;
     private final StudentRepository studentRepository;
-    private final UserRepository userRepository;
+    private final AuthUtils authUtils;
 
     @Autowired
-    public PurchasePackageTransactionService(PurchasePackageTransactionRepository purchasePackageTransactionRepository, StudentService studentService, PackageRepository packageRepository, StudentRepository studentRepository, UserRepository userRepository) {
+    public PurchasePackageTransactionService(PurchasePackageTransactionRepository purchasePackageTransactionRepository, StudentService studentService, PackageRepository packageRepository, StudentRepository studentRepository, AuthUtils authUtils) {
         this.purchasePackageTransactionRepository = purchasePackageTransactionRepository;
         this.studentService = studentService;
         this.packageRepository = packageRepository;
         this.studentRepository = studentRepository;
-        this.userRepository = userRepository;
+        this.authUtils = authUtils;
     }
 
     public List<PurchasePackageTransaction> getAllTransacs() {
@@ -76,13 +74,7 @@ public class PurchasePackageTransactionService {
 //    }
 
     public List<PurchasePackageTransaction> createTransac(PurchasePackageTransactionRequestDTO dto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        User authenticatedUser = this.userRepository.findByUsername(username);
-        if (authenticatedUser == null) {
-            throw new RuntimeException("Authenticated user not found");
-        }
+        User authenticatedUser = authUtils.getAuthenticatedUser();
 
         Optional<Package> packageOpt = packageRepository.findById(dto.getPackageId());
         if (packageOpt.isEmpty()) {

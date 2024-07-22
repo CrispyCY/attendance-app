@@ -9,8 +9,12 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "api/student-attendance")
 public class StudentAttendanceController {
+    private final StudentAttendanceService studentAttendanceService;
+
     @Autowired
-    private StudentAttendanceService studentAttendanceService;
+    public StudentAttendanceController(StudentAttendanceService studentAttendanceService) {
+        this.studentAttendanceService = studentAttendanceService;
+    }
 
     @GetMapping
     public List<CustomStudentAttendanceDTO> getAllAttendances() {
